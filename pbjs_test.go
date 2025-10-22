@@ -29,20 +29,20 @@ func TestMain(m *testing.M) {
 }
 
 func testMain(m *testing.M) int {
-	nc, err := nats.Connect(nats.DefaultURL)
-	if err != nil {
-		if errors.Is(err, nats.ErrNoServers) {
-			return m.Run()
+	if nu := os.Getenv("NATS_URL"); nu != "" {
+		nc, err := nats.Connect(nu)
+		if err != nil {
+			panic(err)
 		}
-		panic(err)
-	}
+		defer nc.Close()
 
-	js, err = jetstream.New(nc)
-	if err != nil {
-		panic(err)
-	}
+		js, err = jetstream.New(nc)
+		if err != nil {
+			panic(err)
+		}
 
-	hasJS.Store(true)
+		hasJS.Store(true)
+	}
 	return m.Run()
 }
 

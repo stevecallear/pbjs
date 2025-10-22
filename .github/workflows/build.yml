@@ -10,6 +10,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      nats:
+        image: nats:alpine
+        ports:
+          - 4222:4222
+        options: --name nats
     strategy:
       fail-fast: false
       matrix:
@@ -21,12 +27,15 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: "${{ matrix.go }}"
-      - name: Setup JetStream
-        run: docker run -p 4222:4222 nats:alpine --js
+      - name: Start JetStream
+        run: |
+          chmod a+x ${{ github.workspace }}/.github/workflows/entrypoint.sh
+          docker cp ${{ github.workspace }}/.github/workflows/entrypoint.sh nats:/usr/local/bin/docker-entrypoint.sh
+          docker restart nats
       - name: Build
         run: |
           go vet .
-          go test . -race -coverprofile=coverage.txt -covermode=atomic
+          NATS_URL=nats:4222 go test . -race -coverprofile=coverage.txt -covermode=atomic
       - name: Coverage
         uses: codecov/codecov-action@v5
         with:
