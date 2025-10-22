@@ -1,0 +1,13 @@
+syntax = "proto3";
+package testpb;
+
+option go_package = "github.com/stevecallear/pbjs/internal/proto/testpb";
+
+message MessageA {
+    string value = 1;
+}
+
+message MessageB {
+    string id = 1;
+    int64 version = 2;
+}
