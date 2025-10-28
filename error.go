@@ -2,66 +2,30 @@ package pbjs
 
 import "errors"
 
-type (
-	// Error represents a handler error
-	Error struct {
-		typ ErrorType
-		err error
-	}
-
-	// ErrorType indicates an error type
-	ErrorType uint8
-)
-
-const (
-	// ErrorTypeNone indicates that there is no error.
-	// It is returned only when a nil error is supplied to [ErrorTypeOf].
-	ErrorTypeNone ErrorType = iota
-
-	// ErrorTypeUnknown indicates an unknown error.
-	// It is returned only when the error supplied to [ErrorTypeOf] does not have a type.
-	ErrorTypeUnknown
-
-	// ErrorTypeTransient indicates that the handler error was transient.
-	// By default transient errors result in Nak.
-	ErrorTypeTransient
-
-	// ErrorTypePersistent indicates that the handler error was persistent.
-	// By default persistent errors result in Term.
-	ErrorTypePersistent
-)
-
-// ErrorTypeOf returns the [ErrorType] of the supplied error
-func ErrorTypeOf(err error) ErrorType {
-	if err == nil {
-		return ErrorTypeNone
-	}
-
-	var e *Error
-	if errors.As(err, &e) {
-		return e.typ
-	}
-	return ErrorTypeUnknown
+type persistentError struct {
+	err error
 }
 
-// NewError wraps the supplied error with the specified types
-func NewError(err error, typ ErrorType) error {
+// NewPersistentError wraps the supplied error to indicate that it is persistent
+func NewPersistentError(err error) error {
 	if err == nil {
 		return nil
 	}
+	return &persistentError{err: err}
+}
 
-	return &Error{
-		typ: typ,
-		err: err,
-	}
+// IsPersistentError returns true if the supplied error is persistent
+func IsPersistentError(err error) bool {
+	var pe *persistentError
+	return errors.As(err, &pe)
 }
 
 // Error returns the inner error message
-func (e *Error) Error() string {
+func (e *persistentError) Error() string {
 	return e.err.Error()
 }
 
 // Unwrap returns the inner error
-func (e *Error) Unwrap() error {
+func (e *persistentError) Unwrap() error {
 	return e.err
 }

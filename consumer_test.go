@@ -20,7 +20,6 @@ import (
 )
 
 func ExampleNewConsumer() {
-	//hello
 	js, ok := getJS()
 	if !ok {
 		fmt.Println("value") // skip the example if jetstream is not available
@@ -104,11 +103,11 @@ func TestConsumer(t *testing.T) {
 	t.Run("should return persistent for resolution errors", func(t *testing.T) {
 		jsc := must(jss.newConsumer(newConsumerConfig()))
 
-		var errtype pbjs.ErrorType
+		var persistent bool
 		ch := make(chan struct{})
 		con := must(pbjs.NewConsumer(jsc, nil, pbjs.WithErrorHandler(func(ctx context.Context, m jetstream.Msg, err error) {
 			defer close(ch)
-			errtype = pbjs.ErrorTypeOf(err)
+			persistent = pbjs.IsPersistentError(err)
 			m.Term()
 		})))
 		defer con.Close()
@@ -120,19 +119,19 @@ func TestConsumer(t *testing.T) {
 
 		wait(t, ch)
 
-		if act, exp := errtype, pbjs.ErrorTypePersistent; act != exp {
-			t.Errorf("got %v error type, expected %v", act, exp)
+		if !persistent {
+			t.Error("got other error, expected persistent")
 		}
 	})
 
 	t.Run("should return persistent for unmarshal errors", func(t *testing.T) {
 		jsc := must(jss.newConsumer(newConsumerConfig()))
 
-		var errtype pbjs.ErrorType
+		var persistent bool
 		ch := make(chan struct{})
 		con := must(pbjs.NewConsumer(jsc, nil, pbjs.WithErrorHandler(func(ctx context.Context, m jetstream.Msg, err error) {
 			defer close(ch)
-			errtype = pbjs.ErrorTypeOf(err)
+			persistent = true
 			m.Term()
 		})))
 		defer con.Close()
@@ -145,8 +144,8 @@ func TestConsumer(t *testing.T) {
 
 		wait(t, ch)
 
-		if act, exp := errtype, pbjs.ErrorTypePersistent; act != exp {
-			t.Errorf("got %v error type, expected %v", act, exp)
+		if !persistent {
+			t.Error("got other error, expected persistent")
 		}
 	})
 
@@ -193,7 +192,7 @@ func TestConsumer(t *testing.T) {
 			if atomic.AddInt32(&n, 1) >= 2 {
 				close(ch)
 			}
-			return pbjs.NewError(errors.New("error"), pbjs.ErrorTypeTransient)
+			return errors.New("error") // transient error
 		})))
 		defer con.Close()
 
@@ -222,7 +221,7 @@ func TestConsumer(t *testing.T) {
 				defer close(ch)
 				<-time.After(100 * time.Millisecond)
 			}()
-			return pbjs.NewError(errors.New("error"), pbjs.ErrorTypePersistent)
+			return pbjs.NewPersistentError(errors.New("error"))
 		})))
 		defer con.Close()
 
@@ -254,7 +253,7 @@ func TestWithLogger(t *testing.T) {
 		ch := make(chan struct{})
 		con, err := pbjs.NewConsumer(jsc,
 			pbjs.HandlerFunc(func(ctx context.Context, m proto.Message) error {
-				return pbjs.NewError(errors.New("error"), pbjs.ErrorTypePersistent)
+				return pbjs.NewPersistentError(errors.New("error"))
 			}),
 			pbjs.WithLogger(l),
 			pbjs.WithErrorHandler(func(ctx context.Context, m jetstream.Msg, err error) {

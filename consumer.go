@@ -38,11 +38,11 @@ var defaultOptions = ConsumerOptions{
 	Logger:  slog.New(slog.DiscardHandler),
 	Timeout: 5 * time.Second,
 	ErrorFn: func(ctx context.Context, m jetstream.Msg, err error) {
-		if ErrorTypeOf(err) == ErrorTypePersistent {
+		if IsPersistentError(err) {
 			m.Term()
-		} else {
-			m.Nak()
+			return
 		}
+		m.Nak()
 	},
 }
 
@@ -119,13 +119,13 @@ func (c *Consumer) handle(m jetstream.Msg) {
 	pm, err := resolveMessage(mt)
 	if err != nil {
 		logger.LogAttrs(ctx, slog.LevelError, "error resolving message", slog.String("err", err.Error()))
-		c.errorFn(ctx, m, NewError(err, ErrorTypePersistent))
+		c.errorFn(ctx, m, NewPersistentError(err))
 		return
 	}
 
 	if err = proto.Unmarshal(m.Data(), pm); err != nil {
 		logger.LogAttrs(ctx, slog.LevelError, "error unmarshaling message", slog.String("err", err.Error()))
-		c.errorFn(ctx, m, NewError(err, ErrorTypePersistent))
+		c.errorFn(ctx, m, NewPersistentError(err))
 		return
 	}
 

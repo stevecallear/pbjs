@@ -53,7 +53,7 @@ func (h HandlerFunc) Handle(ctx context.Context, m proto.Message) error {
 func (h typeHandler[T]) Handle(ctx context.Context, m proto.Message) error {
 	tm, ok := m.(T)
 	if !ok {
-		return NewError(fmt.Errorf("invalid type: got %T, expected %s", m, h.mtype), ErrorTypePersistent)
+		return NewPersistentError(fmt.Errorf("invalid type: got %T, expected %s", m, h.mtype))
 	}
 	return h.fn(ctx, tm)
 }
