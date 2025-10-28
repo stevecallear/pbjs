@@ -64,7 +64,7 @@ func TestLoggingMiddleware(t *testing.T) {
 				pbjs.WithSubjectConvention(jsc.subjectConvention),
 				pbjs.WithPublisherMiddleware(pbjs.LoggingMiddleware(pl)),
 			)
-			err := pub.Publish(t.Context(), new(testpb.MessageA))
+			err := pub.Publish(t.Context(), new(testpb.OrderDispatchedEvent))
 			if err != nil {
 				log.Fatal(err)
 			}

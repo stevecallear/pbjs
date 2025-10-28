@@ -13,13 +13,13 @@ import (
 func TestNewHandler(t *testing.T) {
 	t.Run("should return the type handler", func(t *testing.T) {
 		var invoked bool
-		sut := pbjs.NewHandler(func(ctx context.Context, in *testpb.MessageA) error {
+		sut := pbjs.NewHandler(func(ctx context.Context, in *testpb.OrderDispatchedEvent) error {
 			invoked = true
 			return nil
 		})
 
-		err := sut.Handle(t.Context(), &testpb.MessageA{
-			Value: "abc123",
+		err := sut.Handle(t.Context(), &testpb.OrderDispatchedEvent{
+			Id: "abc123",
 		})
 		if err != nil {
 			t.Errorf("got %v, expected nil", err)
@@ -30,11 +30,11 @@ func TestNewHandler(t *testing.T) {
 	})
 
 	t.Run("should return an error if invoked with invalid type", func(t *testing.T) {
-		sut := pbjs.NewHandler(func(ctx context.Context, in *testpb.MessageA) error {
+		sut := pbjs.NewHandler(func(ctx context.Context, in *testpb.OrderDispatchedEvent) error {
 			return nil
 		})
 
-		err := sut.Handle(t.Context(), new(testpb.MessageB))
+		err := sut.Handle(t.Context(), new(testpb.OrderFulfilledEvent))
 		if err == nil {
 			t.Error("got nil, expected error")
 		}
@@ -64,8 +64,8 @@ func TestHandlerFunc_Handle(t *testing.T) {
 
 func TestMessageType(t *testing.T) {
 	t.Run("should return the message type", func(t *testing.T) {
-		const exp = "testpb.MessageA"
-		act := pbjs.MessageType(new(testpb.MessageA))
+		const exp = "testpb.OrderDispatchedEvent"
+		act := pbjs.MessageType(new(testpb.OrderDispatchedEvent))
 		if act != exp {
 			t.Errorf("got %s, expected %s", act, exp)
 		}

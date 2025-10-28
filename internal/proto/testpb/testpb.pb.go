@@ -21,27 +21,26 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type MessageA struct {
+type DispatchOrderCommand struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Value         string                 `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *MessageA) Reset() {
-	*x = MessageA{}
+func (x *DispatchOrderCommand) Reset() {
+	*x = DispatchOrderCommand{}
 	mi := &file_internal_proto_testpb_testpb_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *MessageA) String() string {
+func (x *DispatchOrderCommand) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MessageA) ProtoMessage() {}
+func (*DispatchOrderCommand) ProtoMessage() {}
 
-func (x *MessageA) ProtoReflect() protoreflect.Message {
+func (x *DispatchOrderCommand) ProtoReflect() protoreflect.Message {
 	mi := &file_internal_proto_testpb_testpb_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -53,40 +52,32 @@ func (x *MessageA) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use MessageA.ProtoReflect.Descriptor instead.
-func (*MessageA) Descriptor() ([]byte, []int) {
+// Deprecated: Use DispatchOrderCommand.ProtoReflect.Descriptor instead.
+func (*DispatchOrderCommand) Descriptor() ([]byte, []int) {
 	return file_internal_proto_testpb_testpb_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *MessageA) GetValue() string {
-	if x != nil {
-		return x.Value
-	}
-	return ""
-}
-
-type MessageB struct {
+type OrderDispatchedEvent struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Version       int64                  `protobuf:"varint,2,opt,name=version,proto3" json:"version,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *MessageB) Reset() {
-	*x = MessageB{}
+func (x *OrderDispatchedEvent) Reset() {
+	*x = OrderDispatchedEvent{}
 	mi := &file_internal_proto_testpb_testpb_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *MessageB) String() string {
+func (x *OrderDispatchedEvent) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MessageB) ProtoMessage() {}
+func (*OrderDispatchedEvent) ProtoMessage() {}
 
-func (x *MessageB) ProtoReflect() protoreflect.Message {
+func (x *OrderDispatchedEvent) ProtoReflect() protoreflect.Message {
 	mi := &file_internal_proto_testpb_testpb_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -98,35 +89,72 @@ func (x *MessageB) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use MessageB.ProtoReflect.Descriptor instead.
-func (*MessageB) Descriptor() ([]byte, []int) {
+// Deprecated: Use OrderDispatchedEvent.ProtoReflect.Descriptor instead.
+func (*OrderDispatchedEvent) Descriptor() ([]byte, []int) {
 	return file_internal_proto_testpb_testpb_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *MessageB) GetId() string {
+func (x *OrderDispatchedEvent) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *MessageB) GetVersion() int64 {
+type OrderFulfilledEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *OrderFulfilledEvent) Reset() {
+	*x = OrderFulfilledEvent{}
+	mi := &file_internal_proto_testpb_testpb_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OrderFulfilledEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OrderFulfilledEvent) ProtoMessage() {}
+
+func (x *OrderFulfilledEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_proto_testpb_testpb_proto_msgTypes[2]
 	if x != nil {
-		return x.Version
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
 	}
-	return 0
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OrderFulfilledEvent.ProtoReflect.Descriptor instead.
+func (*OrderFulfilledEvent) Descriptor() ([]byte, []int) {
+	return file_internal_proto_testpb_testpb_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *OrderFulfilledEvent) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
 }
 
 var File_internal_proto_testpb_testpb_proto protoreflect.FileDescriptor
 
 const file_internal_proto_testpb_testpb_proto_rawDesc = "" +
 	"\n" +
-	"\"internal/proto/testpb/testpb.proto\x12\x06testpb\" \n" +
-	"\bMessageA\x12\x14\n" +
-	"\x05value\x18\x01 \x01(\tR\x05value\"4\n" +
-	"\bMessageB\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
-	"\aversion\x18\x02 \x01(\x03R\aversionB4Z2github.com/stevecallear/pbjs/internal/proto/testpbb\x06proto3"
+	"\"internal/proto/testpb/testpb.proto\x12\x06testpb\"\x16\n" +
+	"\x14DispatchOrderCommand\"&\n" +
+	"\x14OrderDispatchedEvent\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"%\n" +
+	"\x13OrderFulfilledEvent\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02idB4Z2github.com/stevecallear/pbjs/internal/proto/testpbb\x06proto3"
 
 var (
 	file_internal_proto_testpb_testpb_proto_rawDescOnce sync.Once
@@ -140,10 +168,11 @@ func file_internal_proto_testpb_testpb_proto_rawDescGZIP() []byte {
 	return file_internal_proto_testpb_testpb_proto_rawDescData
 }
 
-var file_internal_proto_testpb_testpb_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_internal_proto_testpb_testpb_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_internal_proto_testpb_testpb_proto_goTypes = []any{
-	(*MessageA)(nil), // 0: testpb.MessageA
-	(*MessageB)(nil), // 1: testpb.MessageB
+	(*DispatchOrderCommand)(nil), // 0: testpb.DispatchOrderCommand
+	(*OrderDispatchedEvent)(nil), // 1: testpb.OrderDispatchedEvent
+	(*OrderFulfilledEvent)(nil),  // 2: testpb.OrderFulfilledEvent
 }
 var file_internal_proto_testpb_testpb_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -164,7 +193,7 @@ func file_internal_proto_testpb_testpb_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_proto_testpb_testpb_proto_rawDesc), len(file_internal_proto_testpb_testpb_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
