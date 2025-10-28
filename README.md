@@ -26,19 +26,10 @@ if err != nil {
 defer con.Close()
 
 pub := pbjs.NewPublisher(js)
-err = pub.Publish(ctx, &testpb.OrderDispatchedEvent{Id: "abc123"})
+err = pub.Publish(ctx, &testpb.OrderDispatchedEvent{Id: uuid.NewString()})
 if err != nil {
     log.Fatal(err)
 }
-```
-
-## Handlers
-`Consumers` accept a `Handler` implementation. `HandlerFunc` provides a convenience function to simplify handler creation. To avoid casts, `NewHandler` accepts a typed handler function and returns a `TypeHandler`.
-
-## Middleware
-Both `Publisher` and `Consumer` accept middleware on creation. A simple logging middleware is provided:
-```
-pub := pbjs.NewPublisher(js, pbjs.WithPublisherMiddleware(pbjs.LoggingMiddleware(logger)))
 ```
 
 ## Subject Convention
@@ -48,20 +39,22 @@ pub := pbjs.NewPublisher(js, pbjs.WithSubjectConvention(func(ctx context.Context
     // convention logic
 }))
 ```
-A future goal of the module is to provide a `protoc-gen` implementation to allow subject conventions to be defined as part of the `.proto` definition.
 
-## Handler Errors
-Message acknowledgement is based on the handler result. Handlers can use `NewError` to distinguish between transient and persistent errors:
+## Consumers
+Consumers accept a `Handler` implementation. `HandlerFunc` provides a convenience function to simplify creation. To avoid casts, `NewHandler` accepts a typed handler function.
+
+### Error Handling
+Message acknowledgement can be controlled based on the handler error. By default nil errors result in `Ack`, errors wrapped using `NewPersistentError` result in `Term` and all other errors result in `Nak`.
 ```
 h := pbjs.HandlerFunc(func(ctx context.Context, m *testpb.MessageB) error {
     state, err := store.Get(ctx, m.GetId())
     if err != nil {
-        return pbjs.NewError(err, pbjs.ErrorTypeTransient)
+        return err // transient error, re-deliver
     }
 
     seq := pbjs.GetContextMetadata(ctx).Sequence.Stream
     if state.Version > seq {
-        return pbjs.NewError(errors.New("stale message", pbjs.ErrorTypePersistent))
+        return pbjs.NewPersistentError(errors.New("stale message"))
     }
     
     // logic
@@ -69,7 +62,30 @@ h := pbjs.HandlerFunc(func(ctx context.Context, m *testpb.MessageB) error {
     return nil
 })
 ```
-By default transient errors result in message `Nak` while persistent errors result in message `Term`. This behaviour can be customised using the `WithErrorHandler` option on consumer creation.
+The default behaviour can be customised using the `WithErrorHandler` option on consumer creation.
+
+Message resolution and unmarshaling both result in persistent errors. Both errors occur outside of the handler chain and are therefore not addressable by middleware. Such errors are logged to `slog.Default()` by default with logger customisation achievable using `WithLogger` on consumer creation.
+
+## Middleware
+Both `Publisher` and `Consumer` accept middleware on creation. A simple logging middleware is provided:
+```
+pub := pbjs.NewPublisher(js, pbjs.WithPublisherMiddleware(pbjs.LoggingMiddleware(logger)))
+```
+
+### Validation
+Validation middleware can be used to prevent the publish of invalid messages or to allow consumers to immediately reject invalid messages. A middleware function to achieve this with `protovalidate` would look like the following.
+```
+func ValidationMiddleware() MiddlewareFunc {
+	return func(h Handler) Handler {
+		return HandlerFunc(func(ctx context.Context, m proto.Message) error {
+			if err := protovalidate.Validate(m); err != nil {
+				return pbjs.NewError(err, pbjs.ErrTypePersistent) // return persistent to avoid re-delivery in consumers
+			}
+			return h.Handle(ctx, m)
+		})
+	}
+}
+```
 
 ## Header Propagation
 NATS headers and message metadata are stored in the publish/consume contexts. This allows header propagation when publishing from a consumer handler. By default `HdrCorrelationID` is not overriden in this scenario. All `Nats-Expect-*` headers are removed, however, to avoid unexpected behaviour.
