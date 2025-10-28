@@ -7,6 +7,7 @@
 package testpb
 
 import (
+	_ "github.com/stevecallear/pbjs/proto/pbjs"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -145,16 +146,185 @@ func (x *OrderFulfilledEvent) GetId() string {
 	return ""
 }
 
+type TemplateTypes struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	S             string                 `protobuf:"bytes,1,opt,name=s,proto3" json:"s,omitempty"`
+	I32           int32                  `protobuf:"varint,2,opt,name=i32,proto3" json:"i32,omitempty"`
+	I64           int64                  `protobuf:"varint,3,opt,name=i64,proto3" json:"i64,omitempty"`
+	F32           float32                `protobuf:"fixed32,4,opt,name=f32,proto3" json:"f32,omitempty"`
+	F64           float64                `protobuf:"fixed64,5,opt,name=f64,proto3" json:"f64,omitempty"`
+	B             bool                   `protobuf:"varint,6,opt,name=b,proto3" json:"b,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TemplateTypes) Reset() {
+	*x = TemplateTypes{}
+	mi := &file_internal_proto_testpb_testpb_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TemplateTypes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TemplateTypes) ProtoMessage() {}
+
+func (x *TemplateTypes) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_proto_testpb_testpb_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TemplateTypes.ProtoReflect.Descriptor instead.
+func (*TemplateTypes) Descriptor() ([]byte, []int) {
+	return file_internal_proto_testpb_testpb_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *TemplateTypes) GetS() string {
+	if x != nil {
+		return x.S
+	}
+	return ""
+}
+
+func (x *TemplateTypes) GetI32() int32 {
+	if x != nil {
+		return x.I32
+	}
+	return 0
+}
+
+func (x *TemplateTypes) GetI64() int64 {
+	if x != nil {
+		return x.I64
+	}
+	return 0
+}
+
+func (x *TemplateTypes) GetF32() float32 {
+	if x != nil {
+		return x.F32
+	}
+	return 0
+}
+
+func (x *TemplateTypes) GetF64() float64 {
+	if x != nil {
+		return x.F64
+	}
+	return 0
+}
+
+func (x *TemplateTypes) GetB() bool {
+	if x != nil {
+		return x.B
+	}
+	return false
+}
+
+type MissingAnnotation struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MissingAnnotation) Reset() {
+	*x = MissingAnnotation{}
+	mi := &file_internal_proto_testpb_testpb_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MissingAnnotation) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MissingAnnotation) ProtoMessage() {}
+
+func (x *MissingAnnotation) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_proto_testpb_testpb_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MissingAnnotation.ProtoReflect.Descriptor instead.
+func (*MissingAnnotation) Descriptor() ([]byte, []int) {
+	return file_internal_proto_testpb_testpb_proto_rawDescGZIP(), []int{4}
+}
+
+type InvalidAnnotation struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *InvalidAnnotation) Reset() {
+	*x = InvalidAnnotation{}
+	mi := &file_internal_proto_testpb_testpb_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InvalidAnnotation) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InvalidAnnotation) ProtoMessage() {}
+
+func (x *InvalidAnnotation) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_proto_testpb_testpb_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InvalidAnnotation.ProtoReflect.Descriptor instead.
+func (*InvalidAnnotation) Descriptor() ([]byte, []int) {
+	return file_internal_proto_testpb_testpb_proto_rawDescGZIP(), []int{5}
+}
+
 var File_internal_proto_testpb_testpb_proto protoreflect.FileDescriptor
 
 const file_internal_proto_testpb_testpb_proto_rawDesc = "" +
 	"\n" +
-	"\"internal/proto/testpb/testpb.proto\x12\x06testpb\"\x16\n" +
-	"\x14DispatchOrderCommand\"&\n" +
+	"\"internal/proto/testpb/testpb.proto\x12\x06testpb\x1a\x1cproto/pbjs/annotations.proto\"1\n" +
+	"\x14DispatchOrderCommand:\x19\xfa\xc1\xd1<\x14\n" +
+	"\x12CMD.ORDER.dispatch\"D\n" +
 	"\x14OrderDispatchedEvent\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"%\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id:\x1c\xfa\xc1\xd1<\x17\n" +
+	"\x15ORDER.{id}.dispatched\"B\n" +
 	"\x13OrderFulfilledEvent\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02idB4Z2github.com/stevecallear/pbjs/internal/proto/testpbb\x06proto3"
+	"\x02id\x18\x01 \x01(\tR\x02id:\x1b\xfa\xc1\xd1<\x16\n" +
+	"\x14ORDER.{id}.fulfilled\"\xaf\x01\n" +
+	"\rTemplateTypes\x12\f\n" +
+	"\x01s\x18\x01 \x01(\tR\x01s\x12\x10\n" +
+	"\x03i32\x18\x02 \x01(\x05R\x03i32\x12\x10\n" +
+	"\x03i64\x18\x03 \x01(\x03R\x03i64\x12\x10\n" +
+	"\x03f32\x18\x04 \x01(\x02R\x03f32\x12\x10\n" +
+	"\x03f64\x18\x05 \x01(\x01R\x03f64\x12\f\n" +
+	"\x01b\x18\x06 \x01(\bR\x01b::\xfa\xc1\xd1<5\n" +
+	"3s_{s}.i32_{i32}.i64_{i64}.f32_{f32}.f64_{f64}.b_{b}\"\x13\n" +
+	"\x11MissingAnnotation\"\x1a\n" +
+	"\x11InvalidAnnotation:\x05\xfa\xc1\xd1<\x00B4Z2github.com/stevecallear/pbjs/internal/proto/testpbb\x06proto3"
 
 var (
 	file_internal_proto_testpb_testpb_proto_rawDescOnce sync.Once
@@ -168,11 +338,14 @@ func file_internal_proto_testpb_testpb_proto_rawDescGZIP() []byte {
 	return file_internal_proto_testpb_testpb_proto_rawDescData
 }
 
-var file_internal_proto_testpb_testpb_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_internal_proto_testpb_testpb_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_internal_proto_testpb_testpb_proto_goTypes = []any{
 	(*DispatchOrderCommand)(nil), // 0: testpb.DispatchOrderCommand
 	(*OrderDispatchedEvent)(nil), // 1: testpb.OrderDispatchedEvent
 	(*OrderFulfilledEvent)(nil),  // 2: testpb.OrderFulfilledEvent
+	(*TemplateTypes)(nil),        // 3: testpb.TemplateTypes
+	(*MissingAnnotation)(nil),    // 4: testpb.MissingAnnotation
+	(*InvalidAnnotation)(nil),    // 5: testpb.InvalidAnnotation
 }
 var file_internal_proto_testpb_testpb_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -193,7 +366,7 @@ func file_internal_proto_testpb_testpb_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_proto_testpb_testpb_proto_rawDesc), len(file_internal_proto_testpb_testpb_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
