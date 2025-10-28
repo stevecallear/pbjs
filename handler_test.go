@@ -42,8 +42,8 @@ func TestNewHandler(t *testing.T) {
 		if err == nil {
 			t.Error("got nil, expected error")
 		}
-		if act, exp := pbjs.ErrorTypeOf(err), pbjs.ErrorTypePersistent; act != exp {
-			t.Errorf("got %v, expected %v", act, exp)
+		if !pbjs.IsPersistentError(err) {
+			t.Error("got other error, expected persistent")
 		}
 	})
 }

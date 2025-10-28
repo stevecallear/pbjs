@@ -3,7 +3,6 @@ package pbjs_test
 import (
 	"context"
 	"errors"
-	"log"
 	"math/rand/v2"
 	"os"
 	"sync/atomic"
@@ -128,7 +127,6 @@ func newStream(ctx context.Context, js jetstream.JetStream, cfg jetstream.Stream
 
 func (s *stream) newConsumer(cfg jetstream.ConsumerConfig) (*consumer, error) {
 	pre := s.name + "." + cfg.Name
-	log.Println(pre)
 	cfg.FilterSubject = pre + ".>"
 	cfg.FilterSubjects = nil
 

@@ -51,7 +51,7 @@ func TestLoggingMiddleware(t *testing.T) {
 						defer close(ch)
 						<-time.After(100 * time.Millisecond)
 					}()
-					return pbjs.NewError(tt.err, pbjs.ErrorTypePersistent) // prevent redelivery
+					return pbjs.NewPersistentError(tt.err) // prevent redelivery
 				}),
 				pbjs.WithConsumerMiddleware(pbjs.LoggingMiddleware(cl)),
 			))
