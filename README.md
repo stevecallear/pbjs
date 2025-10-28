@@ -16,7 +16,7 @@ if err != nil {
     log.Fatal(err)
 }
 
-con, err := pbjs.NewConsumer(jsc, pbjs.NewHandler(func(ctx context.Context, m *testpb.MessageA) error {
+con, err := pbjs.NewConsumer(jsc, pbjs.NewHandler(func(ctx context.Context, m *testpb.OrderDispatchedEvent) error {
     log.Println(m.GetValue())
     return nil
 }))
@@ -26,7 +26,7 @@ if err != nil {
 defer con.Close()
 
 pub := pbjs.NewPublisher(js)
-err = pub.Publish(ctx, &testpb.MessageA{Value: "hello"})
+err = pub.Publish(ctx, &testpb.OrderDispatchedEvent{Id: "abc123"})
 if err != nil {
     log.Fatal(err)
 }

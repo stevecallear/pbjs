@@ -24,7 +24,7 @@ func TestPublisher_Publish(t *testing.T) {
 		jsc := must(jss.newConsumer(newConsumerConfig()))
 		pub := pbjs.NewPublisher(js, pbjs.WithSubjectConvention(jsc.subjectConvention))
 
-		err := pub.Publish(t.Context(), &testpb.MessageA{})
+		err := pub.Publish(t.Context(), &testpb.OrderDispatchedEvent{})
 		if err != nil {
 			t.Errorf("got %v, expected nil", err)
 		}
@@ -35,7 +35,7 @@ func TestPublisher_Publish(t *testing.T) {
 			return "", errors.New("error")
 		}))
 
-		err := pub.Publish(t.Context(), &testpb.MessageA{})
+		err := pub.Publish(t.Context(), &testpb.OrderDispatchedEvent{})
 		if err == nil {
 			t.Error("got nil, expected error")
 		}
@@ -64,7 +64,7 @@ func TestPublisher_Publish(t *testing.T) {
 		hd.Set("Nats-Expected-Test", "value")
 		ctx := pbjs.SetContextHeader(t.Context(), hd)
 
-		err := pub.Publish(ctx, new(testpb.MessageA))
+		err := pub.Publish(ctx, new(testpb.OrderDispatchedEvent))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -98,7 +98,7 @@ func TestWithPublisherMiddleware(t *testing.T) {
 			}),
 		)
 
-		err := pub.Publish(t.Context(), &testpb.MessageA{})
+		err := pub.Publish(t.Context(), &testpb.OrderDispatchedEvent{})
 		if err != nil {
 			t.Errorf("got %v, expected nil", err)
 		}

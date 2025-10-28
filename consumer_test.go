@@ -48,9 +48,9 @@ func ExampleNewConsumer() {
 	ch := make(chan struct{})
 
 	con, err := pbjs.NewConsumer(jsc,
-		pbjs.NewHandler(func(ctx context.Context, in *testpb.MessageA) error {
+		pbjs.NewHandler(func(ctx context.Context, in *testpb.OrderDispatchedEvent) error {
 			defer close(ch)
-			value = in.GetValue()
+			value = in.GetId()
 			return nil
 		}),
 	)
@@ -60,7 +60,7 @@ func ExampleNewConsumer() {
 	defer con.Close()
 
 	pub := pbjs.NewPublisher(js)
-	err = pub.Publish(ctx, &testpb.MessageA{Value: "value"})
+	err = pub.Publish(ctx, &testpb.OrderDispatchedEvent{Id: "abc123"})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -72,7 +72,7 @@ func ExampleNewConsumer() {
 	}
 
 	fmt.Println(value)
-	// output: value
+	// output: abc123
 }
 
 func TestConsumer(t *testing.T) {
@@ -86,13 +86,13 @@ func TestConsumer(t *testing.T) {
 		pub := pbjs.NewPublisher(js, pbjs.WithSubjectConvention(jsc.subjectConvention))
 
 		ch := make(chan struct{})
-		con := must(pbjs.NewConsumer(jsc, pbjs.NewHandler(func(ctx context.Context, in *testpb.MessageA) error {
+		con := must(pbjs.NewConsumer(jsc, pbjs.NewHandler(func(ctx context.Context, in *testpb.OrderDispatchedEvent) error {
 			close(ch)
 			return nil
 		})))
 		defer con.Close()
 
-		err := pub.Publish(t.Context(), &testpb.MessageA{Value: "abc123"})
+		err := pub.Publish(t.Context(), &testpb.OrderDispatchedEvent{Id: "abc123"})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -136,7 +136,7 @@ func TestConsumer(t *testing.T) {
 		})))
 		defer con.Close()
 
-		mt := pbjs.MessageType(new(testpb.MessageA))
+		mt := pbjs.MessageType(new(testpb.OrderDispatchedEvent))
 		err := rawPublish(t.Context(), js, jsc.subjectPrefix+"."+mt, mt, []byte("%^&"))
 		if err != nil {
 			t.Fatal(err)
@@ -169,7 +169,7 @@ func TestConsumer(t *testing.T) {
 		defer con.Close()
 
 		pub := pbjs.NewPublisher(js, pbjs.WithSubjectConvention(jsc.subjectConvention))
-		err := pub.Publish(t.Context(), new(testpb.MessageA))
+		err := pub.Publish(t.Context(), new(testpb.OrderDispatchedEvent))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -197,7 +197,7 @@ func TestConsumer(t *testing.T) {
 		defer con.Close()
 
 		pub := pbjs.NewPublisher(js, pbjs.WithSubjectConvention(jsc.subjectConvention))
-		if err := pub.Publish(t.Context(), new(testpb.MessageA)); err != nil {
+		if err := pub.Publish(t.Context(), new(testpb.OrderDispatchedEvent)); err != nil {
 			log.Fatal(err)
 		}
 
@@ -226,7 +226,7 @@ func TestConsumer(t *testing.T) {
 		defer con.Close()
 
 		pub := pbjs.NewPublisher(js, pbjs.WithSubjectConvention(jsc.subjectConvention))
-		if err := pub.Publish(t.Context(), new(testpb.MessageA)); err != nil {
+		if err := pub.Publish(t.Context(), new(testpb.OrderDispatchedEvent)); err != nil {
 			log.Fatal(err)
 		}
 
@@ -267,7 +267,7 @@ func TestWithLogger(t *testing.T) {
 		defer con.Close()
 
 		pub := pbjs.NewPublisher(js, pbjs.WithSubjectConvention(jsc.subjectConvention))
-		if err = pub.Publish(t.Context(), new(testpb.MessageA)); err != nil {
+		if err = pub.Publish(t.Context(), new(testpb.OrderDispatchedEvent)); err != nil {
 			t.Fatal(err)
 		}
 
@@ -306,7 +306,7 @@ func TestWithConsumerMiddleware(t *testing.T) {
 		defer con.Close()
 
 		err := pbjs.NewPublisher(js, pbjs.WithSubjectConvention(jsc.subjectConvention)).
-			Publish(t.Context(), new(testpb.MessageA))
+			Publish(t.Context(), new(testpb.OrderDispatchedEvent))
 		if err != nil {
 			t.Fatal(err)
 		}
