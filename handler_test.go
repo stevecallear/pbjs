@@ -18,10 +18,6 @@ func TestNewHandler(t *testing.T) {
 			return nil
 		})
 
-		if act, exp := sut.Type(), pbjs.MessageType(new(testpb.MessageA)); act != exp {
-			t.Errorf("got %s, expected %s", act, exp)
-		}
-
 		err := sut.Handle(t.Context(), &testpb.MessageA{
 			Value: "abc123",
 		})
@@ -43,7 +39,7 @@ func TestNewHandler(t *testing.T) {
 			t.Error("got nil, expected error")
 		}
 		if !pbjs.IsPersistentError(err) {
-			t.Error("got other error, expected persistent")
+			t.Errorf("got %v, expected persistent error", err)
 		}
 	})
 }
@@ -62,6 +58,16 @@ func TestHandlerFunc_Handle(t *testing.T) {
 		}
 		if !invoked {
 			t.Errorf("got false, expected true")
+		}
+	})
+}
+
+func TestMessageType(t *testing.T) {
+	t.Run("should return the message type", func(t *testing.T) {
+		const exp = "testpb.MessageA"
+		act := pbjs.MessageType(new(testpb.MessageA))
+		if act != exp {
+			t.Errorf("got %s, expected %s", act, exp)
 		}
 	})
 }
