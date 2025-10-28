@@ -40,6 +40,25 @@ pub := pbjs.NewPublisher(js, pbjs.WithSubjectConvention(func(ctx context.Context
 }))
 ```
 
+### Message Annotations
+It is possible to specify a subject as a message annotation to avoid complex convention logic. The subject can optionally include templated elements referring to the proto fields.
+```
+message OrderDispatchedEvent {
+    option (pbjs.message).subject = "ORDER.{id}.dispatched";
+    string id = 1;
+}
+```
+```
+pub := pbjs.NewPublisher(js, 
+    pbjs.WithSubjectConvention(pbjs.AnnotationSubjectConvention),
+    pbjs.WithMiddleware(ValidationMiddleware()), // if message fields are used for the subject convention, they should be validated prior    
+)
+
+pub.Publish(ctx, &testpb.OrderDispatchedEvent{Id: "abc123"})
+// subject: ORDER.abc123.dispatched
+```
+The implementation currently uses `ProtoReflect` to extract the subject template and apply the field values. This can result in runtime errors due to configuration so unit testing is recommended to ensure correct outputs.
+
 ## Consumers
 Consumers accept a `Handler` implementation. `HandlerFunc` provides a convenience function to simplify creation. To avoid casts, `NewHandler` accepts a typed handler function.
 
