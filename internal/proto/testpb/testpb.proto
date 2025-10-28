@@ -3,13 +3,34 @@ package testpb;
 
 option go_package = "github.com/stevecallear/pbjs/internal/proto/testpb";
 
+import "proto/pbjs/annotations.proto";
+
 message DispatchOrderCommand {
+    option (pbjs.message).subject = "CMD.ORDER.dispatch";
 }
 
 message OrderDispatchedEvent {
+    option (pbjs.message).subject = "ORDER.{id}.dispatched";
     string id = 1;
 }
 
 message OrderFulfilledEvent {
+    option (pbjs.message).subject = "ORDER.{id}.fulfilled";
     string id = 1;
+}
+
+message TemplateTypes {
+    option (pbjs.message).subject = "s_{s}.i32_{i32}.i64_{i64}.f32_{f32}.f64_{f64}.b_{b}";
+    string s = 1;
+    int32 i32 = 2;
+    int64 i64 = 3;
+    float f32 = 4;
+    double f64 = 5;
+    bool b = 6;
+}
+
+message MissingAnnotation {}
+
+message InvalidAnnotation {
+    option (pbjs.message) = {};
 }
